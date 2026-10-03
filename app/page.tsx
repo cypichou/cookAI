@@ -1,6 +1,9 @@
 import Link from "next/link";
 import { auth, signIn, signOut } from "@/lib/auth";
 
+// Cette page doit être dynamique (utilise auth() et base de données)
+export const dynamic = "force-dynamic";
+
 export default async function Home() {
   const session = await auth();
 
