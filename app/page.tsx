@@ -1,11 +1,9 @@
 import Link from "next/link";
-import { auth, signIn, signOut } from "@/lib/auth";
-
-// Cette page doit être dynamique (utilise auth() et base de données)
-export const dynamic = "force-dynamic";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 export default async function Home() {
-  const session = await auth();
+  const session = await getServerSession(authOptions);
 
   return (
     <main className="min-h-screen p-8 bg-gray-50">

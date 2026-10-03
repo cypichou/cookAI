@@ -1,34 +1,20 @@
 import NextAuth from "next-auth";
-import { PrismaAdapter } from "@auth/prisma-adapter";
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { db } from "./db";
-import Google from "next-auth/providers/google";
-import Email from "next-auth/providers/email";
+import GoogleProvider from "next-auth/providers/google";
+import EmailProvider from "next-auth/providers/email";
 
-// Types pour étendre la session
-declare module "next-auth" {
-  interface Session {
-    user: {
-      id: string;
-      name?: string | null;
-      email?: string | null;
-      image?: string | null;
-    };
-  }
-
-  interface User {
-    id: string;
-  }
-}
-
-export const { handlers, auth, signIn, signOut } = NextAuth({
+export const authOptions = {
   adapter: PrismaAdapter(db),
-  session: { strategy: "jwt" },
+  session: {
+    strategy: "jwt",
+  },
   providers: [
-    Google({
+    GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID as string,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
     }),
-    Email({
+    EmailProvider({
       server: {
         host: process.env.EMAIL_SERVER_HOST as string,
         port: parseInt(process.env.EMAIL_SERVER_PORT as string),
@@ -45,17 +31,36 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     error: "/",
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user }: any) {
       if (user) {
         token.id = user.id;
       }
       return token;
     },
-    async session({ session, token }) {
-      if (token.sub && session.user) {
+    async session({ session, token }: any) {
+      if (token?.sub && session?.user) {
         session.user.id = token.sub;
       }
       return session;
     },
   },
-});
+  secret: process.env.NEXTAUTH_SECRET,
+};
+
+export default NextAuth(authOptions);
+
+// Types pour étendre la session
+declare module "next-auth" {
+  interface Session {
+    user: {
+      id: string;
+      name?: string | null;
+      email?: string | null;
+      image?: string | null;
+    };
+  }
+  
+  interface User {
+    id: string;
+  }
+}
