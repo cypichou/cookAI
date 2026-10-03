@@ -2,6 +2,9 @@ import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { redirect } from "next/navigation";
 
+// Cette page doit être dynamique (pas de cache statique)
+export const dynamic = "force-dynamic";
+
 export default async function DashboardPage() {
   const session = await auth();
 
