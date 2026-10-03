@@ -19,37 +19,22 @@ export default async function Home() {
                 Connecté en tant que <strong>{session.user?.name}</strong> (
                 {session.user?.email})
               </p>
-              <form
-                action={async () => {
-                  "use server";
-                  await signOut();
-                }}
-                className="ml-auto"
+              <Link
+                href="/api/auth/signout"
+                className="ml-auto px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition inline-block"
               >
-                <button
-                  type="submit"
-                  className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition"
-                >
-                  Déconnexion
-                </button>
-              </form>
+                Déconnexion
+              </Link>
             </div>
           ) : (
             <div className="flex gap-4">
               <p className="text-gray-500">Non connecté</p>
-              <form
-                action={async () => {
-                  "use server";
-                  await signIn("google");
-                }}
+              <Link
+                href="/api/auth/signin/google"
+                className="px-4 py-2 bg-primary-500 text-white rounded-md hover:bg-primary-600 transition inline-block"
               >
-                <button
-                  type="submit"
-                  className="px-4 py-2 bg-primary-500 text-white rounded-md hover:bg-primary-600 transition"
-                >
-                  Se connecter avec Google
-                </button>
-              </form>
+                Se connecter avec Google
+              </Link>
             </div>
           )}
         </div>

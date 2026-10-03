@@ -4,6 +4,22 @@ import { db } from "./db";
 import Google from "next-auth/providers/google";
 import Email from "next-auth/providers/email";
 
+// Types pour étendre la session
+declare module "next-auth" {
+  interface Session {
+    user: {
+      id: string;
+      name?: string | null;
+      email?: string | null;
+      image?: string | null;
+    };
+  }
+
+  interface User {
+    id: string;
+  }
+}
+
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(db),
   session: { strategy: "jwt" },
@@ -43,21 +59,3 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     },
   },
 });
-
-// Types pour étendre la session
-declare module "next-auth" {
-  interface Session {
-    user: {
-      id: string;
-      name?: string | null;
-      email?: string | null;
-      image?: string | null;
-    };
-  }
-}
-
-declare module "next-auth/jwt" {
-  interface JWT {
-    id: string;
-  }
-}
